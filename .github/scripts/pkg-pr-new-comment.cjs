@@ -46,7 +46,7 @@ function buildCommentBody(output, { owner, repo, sha }) {
       `pnpm dlx ${createPracht.url} my-app`,
       "```",
       "",
-      "The scaffolder still resolves published `@pracht/*` ranges from npm. After scaffolding, swap in this PR's packages with the install commands below.",
+      "The scaffolder detects this pkg.pr.new URL and installs matching `@pracht/*` preview packages into the new app.",
       "",
     );
   }
@@ -59,6 +59,8 @@ function buildCommentBody(output, { owner, repo, sha }) {
       `# or`,
       `pnpm dlx ${createFels.url} my-app`,
       "```",
+      "",
+      "Wires `fels`, `@pracht/solid`, and the rest of the stack to this PR's preview tarballs (no npm publish required).",
       "",
     );
   }

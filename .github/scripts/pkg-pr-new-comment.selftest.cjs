@@ -21,7 +21,9 @@ const body = buildCommentBody(output, {
 
 match(body, /npx https:\/\/pkg\.pr\.new\/create-pracht@abc1234 my-app/);
 match(body, /pnpm dlx https:\/\/pkg\.pr\.new\/create-pracht@abc1234 my-app/);
+match(body, /detects this pkg\.pr\.new URL/);
 match(body, /npx https:\/\/pkg\.pr\.new\/create-fels@abc1234 my-app/);
+match(body, /Wires `fels`/);
 match(body, /pnpm add https:\/\/pkg\.pr\.new\/@pracht\/preact@abc1234/);
 match(body, /pnpm add https:\/\/pkg\.pr\.new\/@pracht\/core@abc1234/);
 match(body, /All published packages/);

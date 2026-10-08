@@ -11,7 +11,8 @@ pnpm create pracht my-app
 ```
 
 On an open PR, continuous releases post scaffold commands that run the PR's
-`create-pracht` build:
+`create-pracht` build. The scaffolder detects the pkg.pr.new URL and installs
+matching preview `@pracht/*` packages into the new app:
 
 ```bash
 npx https://pkg.pr.new/create-pracht@<sha> my-app
@@ -19,7 +20,7 @@ npx https://pkg.pr.new/create-pracht@<sha> my-app
 pnpm dlx https://pkg.pr.new/create-pracht@<sha> my-app
 ```
 
-Then install this PR's packages (URLs are in the bot comment), for example:
+To upgrade an existing app to the same preview:
 
 ```bash
 pnpm add https://pkg.pr.new/@pracht/preact@<sha>

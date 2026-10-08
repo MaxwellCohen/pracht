@@ -21,13 +21,15 @@ an older runtime warns instead of failing halfway through a build.
 before the first run. The PR comment leads with scaffold commands:
 
 ```bash
-npx https://pkg.pr.new/create-pracht@<sha> my-app
-pnpm dlx https://pkg.pr.new/create-pracht@<sha> my-app
+pnpm dlx https://pkg.pr.new/<owner>/pracht/create-pracht@<sha> my-app
+pnpm dlx https://pkg.pr.new/<owner>/pracht/create-fels@<sha> my-app
 ```
 
-then install URLs for `@pracht/preact` and the rest of the stack. Preview
-versions are rewritten to `0.0.0-preview-<sha>` so they cannot collide with a
-later npm release of the same semver.
+`create-pracht` / `create-fels` detect the pkg.pr.new URL they were installed
+from and write sibling preview specs into the new app's `package.json`, so the
+first install uses this PR's tarballs (including unpublished packages like
+`fels`). Preview versions are rewritten to `0.0.0-preview-<sha>` so they cannot
+collide with a later npm release of the same semver.
 
 `create-pracht` emits a `tsconfig.client.json` that enables TypeScript's
 `browser` custom condition for routes, shells, islands, and their imports. Root
