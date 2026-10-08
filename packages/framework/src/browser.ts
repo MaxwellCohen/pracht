@@ -1,3 +1,6 @@
+// Register the default Preact renderer before any UI code runs.
+import "./renderer-preact.ts";
+
 export {
   buildHref,
   buildPathFromSegments,
@@ -17,6 +20,30 @@ export {
 // helpers here as well as in index.ts so generated and hand-written client
 // modules can import them from "@pracht/core".
 export { PRACHT_BASE, stripBase, withBase } from "./base.ts";
+export {
+  createHydrationStore,
+  createNavigationStore,
+  createRouteStore,
+  createStore,
+} from "./store.ts";
+export type {
+  HydrationStoreSnapshot,
+  NavigationStoreSnapshot,
+  RouteStoreSnapshot,
+  Store,
+} from "./store.ts";
+export {
+  definePrachtRenderer,
+  getRenderer,
+  setRenderer,
+  tryGetRenderer,
+} from "./renderer.ts";
+export type {
+  PrachtRenderer,
+  RendererComponent,
+  RendererTree,
+} from "./renderer.ts";
+export { ensurePreactRenderer, preactRenderer } from "./renderer-preact.ts";
 /**
  * Constraint factories are plain data builders with no server dependency, and
  * they are called *inside* `defineApp({ constraints })` — which means they run

@@ -1,3 +1,6 @@
+// Register the default Preact renderer before any UI code runs.
+import "./renderer-preact.ts";
+
 export {
   buildHref,
   buildPathFromSegments,
@@ -13,6 +16,39 @@ export {
   timeRevalidate,
   webhookRevalidate,
 } from "./app.ts";
+export {
+  createHydrationStore,
+  createNavigationStore,
+  createRouteStore,
+  createStore,
+} from "./store.ts";
+export type {
+  HydrationStoreSnapshot,
+  NavigationStoreSnapshot,
+  RouteStoreSnapshot,
+  Store,
+  StoreSubscriber,
+  StoreUnsubscribe,
+} from "./store.ts";
+export {
+  definePrachtRenderer,
+  getRenderer,
+  setRenderer,
+  tryGetRenderer,
+  _resetRendererForTesting,
+} from "./renderer.ts";
+export type {
+  ComposePageOptions,
+  PrachtRenderer,
+  PrachtRendererClient,
+  PrachtRendererServer,
+  PrachtRendererVite,
+  RendererComponent,
+  RendererContext,
+  RendererTree,
+  RenderToReadableStreamHandle,
+} from "./renderer.ts";
+export { ensurePreactRenderer, preactRenderer } from "./renderer-preact.ts";
 /**
  * The deploy base (Vite `base`) and the helpers that move a path across it.
  * `<Link route>`, `href()`, and `apiFetch()` apply the base already; these are

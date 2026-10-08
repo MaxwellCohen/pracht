@@ -1,6 +1,10 @@
-import { h, options as preactOptions } from "preact";
+import { h } from "preact";
 import { wrapWithRoot, type RequestRoot } from "./runtime-root.ts";
 import type { ComponentChildren, FunctionComponent, VNode } from "preact";
+import {
+  getRenderToReadableStream as rendererGetRenderToReadableStream,
+  getRenderToStringAsync as rendererGetRenderToStringAsync,
+} from "./renderer-preact.ts";
 
 import {
   buildRuntimeDiagnostics,
@@ -45,10 +49,6 @@ import type {
 } from "./types.ts";
 import { collectFontHeadFragments, type FontHeadFragments } from "./font.ts";
 
-let _renderToStringAsync: typeof import("preact-render-to-string").renderToStringAsync | undefined;
-let _renderToReadableStream:
-  | typeof import("preact-render-to-string/stream").renderToReadableStream
-  | undefined;
 const frameworkFontHeadResponses = new WeakSet<Response>();
 
 export function markFrameworkFontHeadResponse(response: Response): Response {
@@ -60,19 +60,12 @@ export function isFrameworkFontHeadResponse(response: Response): boolean {
   return frameworkFontHeadResponses.has(response);
 }
 
+/**
+ * Buffered SSR renderer. Delegates to the active Preact renderer seam so a
+ * future Solid (or other) backend can plug in without rewriting call sites.
+ */
 export async function getRenderToStringAsync() {
-  // preact-render-to-string leaves class error boundaries disabled by default.
-  // Keep this enabled process-wide: Pracht can render many SSG routes in
-  // parallel, so temporarily toggling the global option would be racy.
-  (
-    preactOptions as typeof preactOptions & {
-      errorBoundaries?: boolean;
-    }
-  ).errorBoundaries = true;
-  if (_renderToStringAsync) return _renderToStringAsync;
-  const mod = await import("preact-render-to-string");
-  _renderToStringAsync = mod.renderToStringAsync;
-  return _renderToStringAsync;
+  return rendererGetRenderToStringAsync();
 }
 
 /**
@@ -84,15 +77,7 @@ export async function getRenderToStringAsync() {
  * identically whichever one runs.
  */
 export async function getRenderToReadableStream() {
-  (
-    preactOptions as typeof preactOptions & {
-      errorBoundaries?: boolean;
-    }
-  ).errorBoundaries = true;
-  if (_renderToReadableStream) return _renderToReadableStream;
-  const mod = await import("preact-render-to-string/stream");
-  _renderToReadableStream = mod.renderToReadableStream;
-  return _renderToReadableStream;
+  return rendererGetRenderToReadableStream();
 }
 
 interface HandleRequestOptionsLike {

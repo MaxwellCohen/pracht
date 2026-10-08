@@ -15,7 +15,11 @@ import {
   PRACHT_GRAPH_ONLY_ENV,
   type WaitUntilTracker,
 } from "@pracht/core/server";
-import { frameworkChunkConfig, islandChunkConfig } from "./chunk-groups.ts";
+import {
+  frameworkChunkConfig,
+  islandChunkConfig,
+  setFrameworkVendorTest,
+} from "./chunk-groups.ts";
 import { createEnvSafetyPlugin, PUBLIC_ENV_PREFIX, SERVER_ENV_MODULE_ID } from "./env-safety.ts";
 import { createServerCssAssetsPlugin } from "./plugin-server-css.ts";
 import { findAppRootModule } from "./plugin-app-root.ts";
@@ -28,15 +32,18 @@ import {
   PRACHT_CLIENT_MODULE_ID,
   PRACHT_DEV_MODULE_ID,
   PRACHT_ISLANDS_CLIENT_MODULE_ID,
+  PRACHT_RENDERER_MODULE_ID,
   PRACHT_SERVER_ISLANDS_CLIENT_MODULE_ID,
   PRACHT_SERVER_MODULE_ID,
   PRACHT_WEBMCP_MODULE_ID,
   PRACHT_DEV_PAGE_TOOLS_MODULE_ID,
+  createPrachtRendererModuleSource,
   isCapabilitiesModule,
   isClientModule,
   isDevModule,
   isDevPageToolsModule,
   isIslandsClientModule,
+  isRendererModule,
   isServerIslandsClientModule,
   isServerModule,
   isWebmcpModule,
@@ -147,6 +154,11 @@ export {
 
 export function pracht(options: PrachtPluginOptions = {}): Plugin[] {
   const resolved = resolveOptions(options);
+  const activeRenderer = resolved.renderer;
+  const rendererDedupe = activeRenderer?.dedupe ?? PREACT_DEDUPE;
+  if (activeRenderer?.vendorChunkTest) {
+    setFrameworkVendorTest(activeRenderer.vendorChunkTest);
+  }
   const isPagesMode = !!resolved.pagesDir;
   let root = process.cwd();
   let routeFileDirs: string[] = [];
@@ -353,14 +365,12 @@ export function pracht(options: PrachtPluginOptions = {}): Plugin[] {
         // server) while keeping Vite's default VITE_ prefix working.
         envPrefix: ["VITE_", PUBLIC_ENV_PREFIX],
         resolve: {
-          // Preact's hook state lives in module-level `options` on the Preact
-          // instance that rendered the tree. A second copy in the graph — from
-          // hoisting, a linked package, or a UI library with its own Preact
-          // dependency — makes any hook-using component die during SSR with
-          // `Cannot read properties of undefined (reading '__H')`, which names
-          // neither the component nor the cause. Collapsing the family onto one
-          // copy is the only sane default.
-          dedupe: PREACT_DEDUPE,
+          // UI-library hook/runtime state lives in module-level singletons.
+          // A second copy in the graph — from hoisting, a linked package, or a
+          // UI library with its own peer — splits that state and breaks
+          // hydration. Collapsing the family onto one copy is the only sane
+          // default. The active renderer supplies the package list.
+          dedupe: rendererDedupe,
         },
         define: {
           __PRACHT_PUBLIC_ENV__: publicEnvDefine,
@@ -486,6 +496,7 @@ export function pracht(options: PrachtPluginOptions = {}): Plugin[] {
       if (isCapabilitiesModule(id)) return PRACHT_CAPABILITIES_MODULE_ID;
       if (isWebmcpModule(id)) return PRACHT_WEBMCP_MODULE_ID;
       if (isDevPageToolsModule(id)) return PRACHT_DEV_PAGE_TOOLS_MODULE_ID;
+      if (isRendererModule(id)) return PRACHT_RENDERER_MODULE_ID;
 
       // Fail loudly when client code imports the server-only env entry.
       // `scan` resolutions (dep optimizer discovery) are skipped because the
@@ -558,6 +569,9 @@ export function pracht(options: PrachtPluginOptions = {}): Plugin[] {
         return isBuild || !resolved.devPageTools
           ? "export {};\n"
           : createPrachtDevPageToolsModuleSource({ root, base });
+      }
+      if (isRendererModule(id)) {
+        return createPrachtRendererModuleSource(activeRenderer?.id ?? null);
       }
       return null;
     },
@@ -944,23 +958,35 @@ export function pracht(options: PrachtPluginOptions = {}): Plugin[] {
     },
   };
 
-  const precompilePlugin = resolved.precompileSsrJsx
-    ? preactSsrPrecompile({
-        ...(resolved.precompileSsrJsx === true ? {} : resolved.precompileSsrJsx),
-        ssrOnly: true,
-      })
-    : null;
+  // Custom renderer supplies its own Vite plugins (Solid, Preact package, …).
+  // The default path keeps the historical `@preact/preset-vite` + optional
+  // SSR precompile + prefresh wiring so existing apps need no config change.
+  let uiPlugins: Plugin[] = [];
+  let clientModulePrefreshPlugin: Plugin | null = null;
 
-  const preactPlugins = preact();
-  // Ordered right after `clientModuleTransformPlugin` on purpose: prefresh has
-  // to see the module with its server-only exports already stripped.
-  const clientModulePrefreshPlugin = createClientModulePrefreshPlugin(preactPlugins, {
-    isRouteOrShellModule: (id) => isRouteOrShellFile(id, routeFileDirs, routeFileExtensions),
-  });
+  if (activeRenderer) {
+    uiPlugins = (activeRenderer.plugins() as Plugin[]) ?? [];
+  } else {
+    const precompilePlugin = resolved.precompileSsrJsx
+      ? preactSsrPrecompile({
+          ...(resolved.precompileSsrJsx === true ? {} : resolved.precompileSsrJsx),
+          ssrOnly: true,
+        })
+      : null;
+    const preactPlugins = preact();
+    // Ordered right after `clientModuleTransformPlugin` on purpose: prefresh has
+    // to see the module with its server-only exports already stripped.
+    clientModulePrefreshPlugin = createClientModulePrefreshPlugin(preactPlugins, {
+      isRouteOrShellModule: (id) => isRouteOrShellFile(id, routeFileDirs, routeFileExtensions),
+    });
+    uiPlugins = [
+      ...(precompilePlugin ? [precompilePlugin as Plugin] : []),
+      ...(preactPlugins as Plugin[]),
+    ];
+  }
 
   const plugins: Plugin[] = [
-    ...(precompilePlugin ? [precompilePlugin] : []),
-    ...preactPlugins,
+    ...uiPlugins,
     prachtPlugin,
     configuredBasePlugin,
     clientModuleTransformPlugin,

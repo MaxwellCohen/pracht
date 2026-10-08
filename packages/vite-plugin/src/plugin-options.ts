@@ -1,4 +1,4 @@
-import type { RenderMode } from "@pracht/core";
+import type { PrachtRendererVite, RenderMode } from "@pracht/core";
 import type { PreactSsrPrecompileOptions } from "@pracht/preact-ssr-precompile";
 import type { EnvSafetyOptions } from "./env-safety.ts";
 import { createDefaultNodeAdapter, type PrachtAdapter } from "./plugin-adapter.ts";
@@ -181,8 +181,21 @@ export interface PrachtPluginOptions {
   /**
    * Opt into precompiling safe Preact JSX DOM subtrees for SSR/SSG server bundles.
    * Client bundles keep the normal Preact JSX transform for hydration.
+   * Only applies when using the default Preact renderer (or `@pracht/preact`).
    */
   precompileSsrJsx?: boolean | PreactSsrPrecompileOptions;
+  /**
+   * UI library renderer. Defaults to the built-in Preact preset
+   * (`@preact/preset-vite`). Pass `solid()` from `@pracht/solid/vite` (or
+   * `preact()` from `@pracht/preact/vite`) to select a renderer package.
+   *
+   * ```ts
+   * import { pracht } from "@pracht/vite-plugin";
+   * import { solid } from "@pracht/solid/vite";
+   * export default { plugins: [pracht({ renderer: solid() })] };
+   * ```
+   */
+  renderer?: PrachtRendererVite;
   /**
    * Client-bundle env leak detection. Enabled by default: production client
    * chunks referencing `process.env.X` / `import.meta.env.X` for a non-public
@@ -206,7 +219,9 @@ export interface PrachtPluginOptions {
   devPageTools?: boolean;
 }
 
-export type ResolvedPrachtPluginOptions = Required<PrachtPluginOptions>;
+export type ResolvedPrachtPluginOptions = Required<Omit<PrachtPluginOptions, "renderer">> & {
+  renderer: PrachtRendererVite | null;
+};
 
 export const CLIENT_FEATURE_DEFAULTS: Required<PrachtClientOptions> = {
   prefetch: true,
@@ -237,15 +252,17 @@ const DEFAULTS: ResolvedPrachtPluginOptions = {
   maxBodySize: 1024 * 1024,
   budgets: {},
   precompileSsrJsx: false,
+  renderer: null,
   envSafety: {},
   llmsTxt: false,
   devPageTools: true,
 };
 
 export function resolveOptions(options: PrachtPluginOptions): ResolvedPrachtPluginOptions {
-  const resolved = {
+  const resolved: ResolvedPrachtPluginOptions = {
     ...DEFAULTS,
     ...options,
+    renderer: options.renderer ?? null,
   };
   // An explicit `llmsTxt: undefined` (permitted by the optional type) would
   // spread over the `false` default — treat it as disabled, not invalid.

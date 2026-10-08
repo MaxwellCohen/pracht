@@ -6,8 +6,8 @@ prev:
   href: /docs/routing
   title: Routing
 next:
-  href: /docs/islands
-  title: Islands
+  href: /docs/renderers
+  title: UI Renderers
 ---
 
 ## Overview

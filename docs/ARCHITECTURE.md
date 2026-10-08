@@ -19,12 +19,18 @@ The current repo scaffold and package boundaries are tracked in
                        │
 ┌──────────────────────▼──────────────────────────────────┐
 │                  packages/framework                      │
-│  Route manifest · Router · Server renderer · Client RT   │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
+│  Route manifest · Router · Renderer contract · Stores    │
+└──────────┬───────────────────────────────┬──────────────┘
+           │                               │
+┌──────────▼──────────┐         ┌──────────▼──────────────┐
+│  @pracht/preact     │         │  @pracht/solid (fels)   │
+│  Default renderer   │         │  SolidJS 2.0 renderer   │
+└──────────┬──────────┘         └──────────┬──────────────┘
+           └───────────────┬───────────────┘
+┌──────────────────────────▼──────────────────────────────┐
 │                 packages/vite-plugin                      │
 │  Virtual modules · Multi-env build · SSG prerender       │
+│  pracht({ renderer }) · virtual:pracht/renderer          │
 └──────────────┬───────────────────────┬──────────────────┘
                │                       │
 ┌──────────────▼────────┐ ┌────────────▼──────────────────┐
@@ -35,6 +41,8 @@ The current repo scaffold and package boundaries are tracked in
         packages/capabilities
  contract · validation · trust · standalone HTTP/MCP host
 ```
+
+UI rendering is pluggable — see [RENDERERS.md](RENDERERS.md).
 
 `@pracht/capabilities` is below the framework boundary: `@pracht/core` uses
 its server internals for integrated dispatch, while non-Pracht applications

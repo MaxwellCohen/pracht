@@ -39,7 +39,11 @@ constraint; the CLI test is.
 
 | Path                          | Package                      | Current role                                                                                                 |
 | ----------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `packages/framework`          | `@pracht/core`               | Core manifest API, route resolution, API routes, SSR rendering, client runtime                               |
+| `packages/framework`          | `@pracht/core`               | Core manifest API, route resolution, API routes, renderer contract, framework-free stores, client runtime    |
+| `packages/preact`             | `@pracht/preact`             | Preact UI renderer: Vite plugins, hooks re-exports (default renderer)                                        |
+| `packages/solid`              | `@pracht/solid`              | SolidJS 2.0 UI renderer: Vite plugins, SSR/stream, hooks, compile-time islands                               |
+| `packages/fels`               | `fels`                       | Solid-first entry: re-exports core + registers `@pracht/solid`                                               |
+| `packages/create-fels`        | `create-fels`                | Scaffold a Fels (Pracht + Solid) app                                                                         |
 | `packages/content`            | `@pracht/content`            | Optional server-only content registry, locale fallback, compilation cache, Vite transforms, and static artifacts |
 | `packages/markdown`           | `@pracht/markdown`           | Official Markdown collection compiler with safe relative-image imports and zero-runtime responsive markup       |
 | `packages/openapi`            | `@pracht/openapi`            | Opt-in OpenAPI 3.1 descriptors, live JSON/UI endpoints, and static build artifacts for API routes            |
@@ -59,6 +63,7 @@ constraint; the CLI test is.
 | `packages/cli`                | `@pracht/cli`                | `pracht dev`, `build`, `verify`, the `generate` subcommands, `doctor`, and the `pracht dev-mcp` authoring server |
 | `packages/start`              | `create-pracht`              | Project scaffolder: router choice, adapter choice, agent tooling (`.mcp.json`, skills, `AGENTS.md`)         |
 | `examples/basic`              | `@pracht/example-basic`      | The reference app: all four render modes, loaders, API routes, `@pracht/session` auth, capabilities, forms. Builds for four adapters from one source tree |
+| `examples/solid`              | `@pracht/example-solid`      | Minimal Fels app: Solid 2.0 renderer, SSR + SSG routes                                                       |
 | `examples/showcase`           | `@pracht/example-showcase`   | *Launchpad* — the whole capability graph and agent trust layer in one app: six operations projected to browser, forms, WebMCP, signed remote callers, and `/mcp` |
 | `examples/islands`            | `@pracht/example-islands`    | Partial hydration: an island beside a server component whose handlers never hydrate; server islands   |
 | `examples/pages-router`       | `@pracht/example-pages-router` | File-system routing with no manifest, including the `_app.tsx` shell convention                            |

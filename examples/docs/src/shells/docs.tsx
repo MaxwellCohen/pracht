@@ -54,6 +54,7 @@ const NAV = [
     label: "Core Concepts",
     links: [
       { href: "/docs/rendering", Icon: IconBolt, title: "Rendering Modes" },
+      { href: "/docs/renderers", Icon: IconApps, title: "UI Renderers" },
       { href: "/docs/islands", Icon: IconSparkles, title: "Islands" },
       { href: "/docs/server-islands", Icon: IconUserBolt, title: "Server Islands" },
       { href: "/docs/data-loading", Icon: IconServerBolt, title: "Data Loading" },

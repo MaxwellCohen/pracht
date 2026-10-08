@@ -12,11 +12,59 @@ import type {
   PrachtContextExtensions,
 } from "@pracht/capabilities/server/internal";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
-import type { ComponentChildren, ComponentType, FunctionComponent } from "preact";
+import type {
+  ComponentChildren as PreactComponentChildren,
+  ComponentType as PreactComponentType,
+  FunctionComponent as PreactFunctionComponent,
+} from "preact";
 
 import type { ApiValidationIssue } from "./api-validation.ts";
 import type { RouteConstraint } from "./constraints.ts";
 import type { PrachtFont } from "./font.ts";
+
+/**
+ * Renderer packages augment this interface through declaration merging so
+ * `FunctionComponent`, `ComponentChildren`, and `ComponentType` resolve to the
+ * active UI library. The Preact defaults below keep existing apps typed until
+ * `@pracht/preact` or `@pracht/solid` fills them in.
+ *
+ * ```ts
+ * // In @pracht/solid
+ * declare module "@pracht/core" {
+ *   interface PrachtRendererTypes {
+ *     Component: import("solid-js").Component;
+ *     Children: import("solid-js").JSX.Element;
+ *     ComponentType: import("solid-js").Component;
+ *   }
+ * }
+ * ```
+ */
+// biome-ignore lint/suspicious/noEmptyInterface: augmented by renderer packages
+export interface PrachtRendererTypes {}
+
+type RendererComponentProp = PrachtRendererTypes extends { Component: infer C } ? C : never;
+type RendererChildrenProp = PrachtRendererTypes extends { Children: infer C } ? C : never;
+type RendererComponentTypeProp = PrachtRendererTypes extends { ComponentType: infer C }
+  ? C
+  : never;
+
+/** Component type for route/shell/root modules — Preact by default, Solid when augmented. */
+export type FunctionComponent<P = Record<string, unknown>> =
+  [RendererComponentProp] extends [never]
+    ? PreactFunctionComponent<P>
+    : RendererComponentProp extends (props: P) => unknown
+      ? RendererComponentProp
+      : PreactFunctionComponent<P>;
+
+export type ComponentChildren =
+  [RendererChildrenProp] extends [never] ? PreactComponentChildren : RendererChildrenProp;
+
+export type ComponentType<P = Record<string, unknown>> =
+  [RendererComponentTypeProp] extends [never]
+    ? PreactComponentType<P>
+    : RendererComponentTypeProp extends (props: P) => unknown
+      ? RendererComponentTypeProp
+      : PreactComponentType<P>;
 
 /**
  * Augment this interface to register your app's context type globally.

@@ -1,3 +1,6 @@
+// Register the default Preact renderer before any UI code runs.
+import "./renderer-preact.ts";
+
 export {
   buildHref,
   buildPathFromSegments,
@@ -15,6 +18,17 @@ export {
 } from "./app.ts";
 export { createHref } from "./href.ts";
 export { restoreBasePathInRequest, stripBase, withBase } from "./base.ts";
+export {
+  definePrachtRenderer,
+  getRenderer,
+  setRenderer,
+  tryGetRenderer,
+} from "./renderer.ts";
+export type {
+  PrachtRenderer,
+  RendererTree,
+} from "./renderer.ts";
+export { ensurePreactRenderer, preactRenderer } from "./renderer-preact.ts";
 export {
   isMcpResourceMetadataPath,
   mcpResourceMetadataPath,
