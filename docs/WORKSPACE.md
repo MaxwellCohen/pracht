@@ -7,11 +7,27 @@ described in `VISION_MVP.md`.
 
 | Pin | Where | Value |
 | --- | --- | --- |
-| Package manager | root `package.json#packageManager`, both workflows | `pnpm@11.3.0` |
+| Package manager | root `package.json#packageManager`, CI / release / pkg.pr.new workflows | `pnpm@11.3.0` |
 | Node | root `package.json#engines.node`, `.nvmrc`, `.node-version` | `>=22.18` / `22.22.3` |
 
 Every published package carries `engines.node: ">=22.18"` too, so an install on
 an older runtime warns instead of failing halfway through a build.
+
+### Continuous releases (pkg.pr.new)
+
+`.github/workflows/pkg-pr-new.yml` publishes every `packages/*` build to
+[pkg.pr.new](https://pkg.pr.new) on PRs and on pushes to `main`. Install the
+[pkg-pr-new GitHub App](https://github.com/apps/pkg-pr-new) on the repository
+before the first run. The PR comment leads with scaffold commands:
+
+```bash
+npx https://pkg.pr.new/create-pracht@<sha> my-app
+pnpm dlx https://pkg.pr.new/create-pracht@<sha> my-app
+```
+
+then install URLs for `@pracht/preact` and the rest of the stack. Preview
+versions are rewritten to `0.0.0-preview-<sha>` so they cannot collide with a
+later npm release of the same semver.
 
 `create-pracht` emits a `tsconfig.client.json` that enables TypeScript's
 `browser` custom condition for routes, shells, islands, and their imports. Root
