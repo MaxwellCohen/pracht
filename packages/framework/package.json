@@ -1,10 +1,11 @@
 {
   "name": "@pracht/core",
   "version": "0.18.0",
-  "description": "Core runtime for Pracht, a full-stack Preact framework with per-route SSR, SSG, ISG, SPA, loaders, and API routes.",
+  "description": "Core runtime for Pracht: UI-agnostic routing, loaders, API routes, renderer contract, and framework-free stores. Pair with @pracht/preact or @pracht/solid.",
   "keywords": [
     "pracht",
     "preact",
+    "solid",
     "framework",
     "full-stack",
     "ssr",
@@ -12,7 +13,8 @@
     "isg",
     "routing",
     "loaders",
-    "api-routes"
+    "api-routes",
+    "renderer"
   ],
   "license": "MIT",
   "homepage": "https://github.com/JoviDeCroock/pracht/tree/main/packages/framework",

@@ -1,0 +1,63 @@
+{
+  "name": "fels",
+  "version": "0.1.0",
+  "description": "Fels — Pracht with SolidJS 2.0. Full-stack Solid apps with Pracht's routing, loaders, adapters, and capabilities.",
+  "keywords": [
+    "fels",
+    "pracht",
+    "solid",
+    "solidjs",
+    "ssr",
+    "framework",
+    "vite"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/JoviDeCroock/pracht/tree/main/packages/fels",
+  "bugs": {
+    "url": "https://github.com/JoviDeCroock/pracht/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoviDeCroock/pracht",
+    "directory": "packages/fels"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.mts",
+      "default": "./dist/vite.mjs"
+    }
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsdown",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@pracht/core": "workspace:*",
+    "@pracht/solid": "workspace:*",
+    "@pracht/vite-plugin": "workspace:*"
+  },
+  "peerDependencies": {
+    "@solidjs/web": "2.0.0-rc.14",
+    "solid-js": "2.0.0-rc.14",
+    "vite": "^8.0.0"
+  },
+  "devDependencies": {
+    "@solidjs/web": "2.0.0-rc.14",
+    "solid-js": "2.0.0-rc.14",
+    "vite": "^8.0.0"
+  }
+}

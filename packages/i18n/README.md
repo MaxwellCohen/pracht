@@ -5,7 +5,8 @@ productizing the framework's documented pattern: **middleware detects the
 locale → loaders return translations → components consume them via route
 data**. This is deliberately not a translation framework — it is the typed
 plumbing around locale detection, lazy dictionaries, plural selection, and
-hreflang metadata.
+hreflang metadata. The package is UI-library free: it works with the Preact
+renderer and with Fels / `@pracht/solid`.
 
 ```bash
 npm install @pracht/i18n

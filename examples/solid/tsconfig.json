@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "jsxImportSource": "@solidjs/web",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vite/client"],
+    "paths": {
+      "fels": ["../../packages/fels/src/index.ts"],
+      "fels/*": ["../../packages/fels/src/*"],
+      "@pracht/core": ["../../packages/framework/src/index.ts"],
+      "@pracht/solid": ["../../packages/solid/src/index.ts"],
+      "@pracht/solid/*": ["../../packages/solid/src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

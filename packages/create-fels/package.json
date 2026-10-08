@@ -1,0 +1,39 @@
+{
+  "name": "create-fels",
+  "version": "0.1.0",
+  "description": "Scaffold a Fels (Pracht + SolidJS 2.0) app.",
+  "keywords": [
+    "fels",
+    "pracht",
+    "solid",
+    "create",
+    "scaffold",
+    "vite"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/JoviDeCroock/pracht/tree/main/packages/create-fels",
+  "bugs": {
+    "url": "https://github.com/JoviDeCroock/pracht/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoviDeCroock/pracht",
+    "directory": "packages/create-fels"
+  },
+  "bin": {
+    "create-fels": "./bin/create-fels.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
+  "scripts": {}
+}

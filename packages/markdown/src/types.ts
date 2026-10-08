@@ -61,4 +61,14 @@ export interface DefineMarkdownCollectionOptions<
   artifacts?: readonly ContentArtifactGenerator<TFrontmatter, CompiledMarkdown>[];
   /** Forwarded to `defineCollection`: trim `raw`/`body` from runtime snapshots. */
   snapshot?: ContentSnapshotOptions;
+  /**
+   * JSX factory used when emitting the route `Component()`. Defaults to
+   * Preact's `h`. Solid apps pass `@solidjs/h` (default export).
+   */
+  jsxFactory?: {
+    importFrom: string;
+    importName: string;
+    /** Local binding name; defaults to `importName` (or `h` for default). */
+    binding?: string;
+  };
 }

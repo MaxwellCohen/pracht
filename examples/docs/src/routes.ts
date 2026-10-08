@@ -31,6 +31,10 @@ export const app = defineApp({
         id: "rendering",
         render: "ssg",
       }),
+      route("/docs/renderers", () => import("./routes/docs/renderers.md"), {
+        id: "renderers",
+        render: "ssg",
+      }),
       route("/docs/islands", () => import("./routes/docs/islands.md"), {
         id: "islands",
         render: "ssg",

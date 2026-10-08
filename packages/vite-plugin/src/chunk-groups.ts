@@ -29,11 +29,25 @@
  * `[\\/]` rather than `/` so the group matches on Windows, and no trailing
  * boundary so the Preact family — `preact/hooks`, `preact-suspense`,
  * `preact-render-to-string` — lands in one chunk with Preact itself.
+ *
+ * When a non-Preact renderer is active, call {@link setFrameworkVendorTest}
+ * with that renderer's `vendorChunkTest` so the vendor chunk still groups
+ * correctly.
  */
-const FRAMEWORK_VENDOR_TEST = /node_modules[\\/]preact/;
+let FRAMEWORK_VENDOR_TEST = /node_modules[\\/]preact/;
 
-/** Name of the chunk pracht groups the Preact runtime into. */
+/** Name of the chunk pracht groups the UI runtime into. */
 export const FRAMEWORK_VENDOR_CHUNK = "vendor";
+
+/** Override the vendor-chunk regex for a non-default UI renderer. */
+export function setFrameworkVendorTest(test: RegExp): void {
+  FRAMEWORK_VENDOR_TEST = test;
+}
+
+/** Restore the default Preact vendor-chunk regex. */
+export function resetFrameworkVendorTest(): void {
+  FRAMEWORK_VENDOR_TEST = /node_modules[\\/]preact/;
+}
 
 export interface ChunkGroup {
   /** A function names each matched module's chunk individually. */

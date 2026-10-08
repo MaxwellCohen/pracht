@@ -1,3 +1,6 @@
+// Register the default Preact renderer before any UI code runs.
+import "./renderer-preact.ts";
+
 export { parseRouteSearch } from "./api-validation.ts";
 export { resolveApp } from "./app.ts";
 export { initClientRouter } from "./router.ts";
@@ -8,3 +11,5 @@ export { DEV_ROUTE_DATA_STALE_EVENT, refreshDevRouteData } from "./dev-route-ref
 
 export type { InitClientRouterOptions, NavigateFn } from "./router.ts";
 export type { PrachtHydrationState } from "./runtime-context.ts";
+export { getRenderer, setRenderer } from "./renderer.ts";
+export type { PrachtRenderer } from "./renderer.ts";

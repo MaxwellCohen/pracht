@@ -8,6 +8,14 @@ minimumReleaseAge: 10080
 # Changesets v3 was explicitly adopted on release day. Keep these exceptions
 # version-pinned so later Changesets releases still pass through the quarantine.
 minimumReleaseAgeExclude:
+  # Solid 2.0 RC pin for @pracht/solid / fels — bump deliberately with the pin.
+  - "solid-js@2.0.0-rc.14"
+  - "@solidjs/web@2.0.0-rc.14"
+  - "@solidjs/h@2.0.0-rc.14"
+  - "@solidjs/signals@2.0.0-rc.14"
+  - "@solidjs/vite-plugin@3.0.0-next.47"
+  - "@solidjs/compiler@2.0.0-rc.13"
+  - "@solidjs/babel-plugin@2.0.0-rc.13"
   - "@changesets/apply-release-plan@8.0.0"
   - "@changesets/assemble-release-plan@7.0.0"
   - "@changesets/changelog-git@1.0.0"

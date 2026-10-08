@@ -1,0 +1,76 @@
+{
+  "name": "@pracht/solid",
+  "version": "0.1.0",
+  "description": "SolidJS 2.0 UI renderer for Pracht (fels): Vite plugins, SSR, streaming, hydration, hooks, and islands.",
+  "keywords": [
+    "pracht",
+    "fels",
+    "solid",
+    "solidjs",
+    "renderer",
+    "ssr",
+    "vite"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/JoviDeCroock/pracht/tree/main/packages/solid",
+  "bugs": {
+    "url": "https://github.com/JoviDeCroock/pracht/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoviDeCroock/pracht",
+    "directory": "packages/solid"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.mts",
+      "default": "./dist/vite.mjs"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.mts",
+      "default": "./dist/hooks.mjs"
+    },
+    "./islands": {
+      "types": "./dist/islands.d.mts",
+      "default": "./dist/islands.mjs"
+    }
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsdown",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@pracht/core": "workspace:*",
+    "@solidjs/h": "2.0.0-rc.14",
+    "@solidjs/vite-plugin": "3.0.0-next.47"
+  },
+  "peerDependencies": {
+    "@solidjs/web": "2.0.0-rc.14",
+    "solid-js": "2.0.0-rc.14",
+    "vite": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@solidjs/web": "2.0.0-rc.14",
+    "solid-js": "2.0.0-rc.14",
+    "vite": "^8.0.0"
+  }
+}

@@ -31,6 +31,14 @@
       "types": "./dist/index.d.mts",
       "default": "./dist/index.mjs"
     },
+    "./preact": {
+      "types": "./dist/preact.d.mts",
+      "default": "./dist/preact.mjs"
+    },
+    "./solid": {
+      "types": "./dist/solid.d.mts",
+      "default": "./dist/solid.mjs"
+    },
     "./root": {
       "types": "./dist/root.d.mts",
       "default": "./dist/root.mjs"
@@ -48,12 +56,36 @@
     "@pracht/core": "workspace:*"
   },
   "peerDependencies": {
+    "@solidjs/h": "2.0.0-rc.14",
     "@tanstack/preact-query": "^5.91.0",
-    "preact": "^10.0.0"
+    "@tanstack/solid-query": "^5.91.0",
+    "preact": "^10.0.0",
+    "solid-js": "2.0.0-rc.14"
+  },
+  "peerDependenciesMeta": {
+    "@solidjs/h": {
+      "optional": true
+    },
+    "@tanstack/preact-query": {
+      "optional": true
+    },
+    "@tanstack/solid-query": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@solidjs/h": "2.0.0-rc.14",
     "@tanstack/preact-query": "^5.91.0",
+    "@tanstack/solid-query": "^5.91.0",
     "preact": "11.0.0-rc.1",
-    "preact-render-to-string": "^6.7.0"
+    "preact-render-to-string": "^6.7.0",
+    "solid-js": "2.0.0-rc.14"
   }
 }
+

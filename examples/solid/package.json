@@ -1,0 +1,28 @@
+{
+  "name": "@pracht/example-solid",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ../../scripts/run-pracht.mjs PRACHT_ADAPTER=node -- dev",
+    "build": "node ../../scripts/run-pracht.mjs PRACHT_ADAPTER=node -- build",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "verify": "pnpm typecheck && node ../../scripts/run-pracht.mjs PRACHT_ADAPTER=node -- verify"
+  },
+  "dependencies": {
+    "@pracht/adapter-node": "workspace:*",
+    "@pracht/core": "workspace:*",
+    "@pracht/solid": "workspace:*",
+    "@solidjs/h": "2.0.0-rc.14",
+    "@solidjs/web": "2.0.0-rc.14",
+    "fels": "workspace:*",
+    "solid-js": "2.0.0-rc.14"
+  },
+  "devDependencies": {
+    "@pracht/cli": "workspace:*",
+    "@pracht/vite-plugin": "workspace:*",
+    "@solidjs/vite-plugin": "3.0.0-next.47",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.0"
+  }
+}

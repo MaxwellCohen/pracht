@@ -106,7 +106,20 @@ function moduleCode<TFrontmatter extends Record<string, unknown>>(
   const metadata = document.compiled.images.map(
     (image) => `__prachtImage${uniqueSources.indexOf(image.source)}`,
   );
-  const lines = [`import { h } from "preact";`];
+  // Renderer-aware JSX factory. Defaults to Preact; Solid apps pass
+  // `jsxFactory: { importFrom: "@solidjs/h", importName: "default" }` (or
+  // rely on the Solid markdown emitter once wired through the vite plugin).
+  const jsxFactory = options.jsxFactory ?? {
+    importFrom: "preact",
+    importName: "h",
+    binding: "h",
+  };
+  const factoryBinding = jsxFactory.binding ?? jsxFactory.importName;
+  const factoryImport =
+    jsxFactory.importName === "default"
+      ? `import ${factoryBinding} from ${JSON.stringify(jsxFactory.importFrom)};`
+      : `import { ${jsxFactory.importName} as ${factoryBinding} } from ${JSON.stringify(jsxFactory.importFrom)};`;
+  const lines = [factoryImport];
   if (imports.length > 0) {
     lines.push(`import { renderMarkdownImages } from "@pracht/markdown/runtime";`, ...imports);
   }
@@ -130,7 +143,7 @@ function moduleCode<TFrontmatter extends Record<string, unknown>>(
     `const __prachtHtml = ${html};`,
     ``,
     `export function Component() {`,
-    `  return h("div", { class: "pracht-markdown", dangerouslySetInnerHTML: { __html: __prachtHtml } });`,
+    `  return ${factoryBinding}("div", { class: "pracht-markdown", dangerouslySetInnerHTML: { __html: __prachtHtml } });`,
     `}`,
   );
   return lines.join("\n");

@@ -5,6 +5,13 @@ declare module "virtual:pracht/server" {
 
 declare module "virtual:pracht/client" {}
 
+declare module "virtual:pracht/renderer" {
+  import type { PrachtRenderer } from "@pracht/core";
+  export const renderer: PrachtRenderer;
+  export function getRenderer(): PrachtRenderer;
+  export default renderer;
+}
+
 declare module "virtual:pracht/capabilities" {
   import type {
     CapabilityBrowserCallOptions,

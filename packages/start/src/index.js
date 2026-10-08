@@ -5,6 +5,7 @@ import { basename, dirname, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { fileURLToPath } from "node:url";
 
+import { findPkgPrNewPackageUrl, siblingPkgPrNewUrl } from "./pkg-pr-new.js";
 import { loadFallbackVersionRanges } from "./versions.js";
 
 export class ValidationError extends Error {
@@ -147,6 +148,11 @@ export async function run(argv = process.argv.slice(2)) {
 
   log("create-pracht");
   log(`Using ${packageManager} for this scaffold.`);
+  const previewUrl = findPkgPrNewPackageUrl("create-pracht", import.meta.url);
+  if (previewUrl) {
+    log(`Using pkg.pr.new preview packages from`);
+    log(`  ${previewUrl}`);
+  }
   log("");
 
   const dir = options.dir ?? (options.yes ? DEFAULT_DIRECTORY : null);
@@ -737,6 +743,18 @@ async function buildProjectFiles({
   const { fallbacks: versionFallbacks, versions } = await resolveVersions(packagesToResolve, {
     remote: resolveRemoteVersions,
   });
+
+  // When create-pracht itself came from pkg.pr.new, wire sibling preview URLs
+  // so the scaffold installs this PR's packages instead of npm registry ranges.
+  const pkgPrNewUrl = findPkgPrNewPackageUrl("create-pracht", import.meta.url);
+  if (pkgPrNewUrl) {
+    for (const name of packagesToResolve) {
+      if (name.startsWith("@pracht/")) {
+        versions[name] = siblingPkgPrNewUrl(pkgPrNewUrl, "create-pracht", name);
+      }
+    }
+  }
+
   const policyMajor = pnpmMajor ?? 11;
   const ancestorWorkspace =
     targetDir && packageManager === "pnpm" ? findAncestorPnpmWorkspace(targetDir) : null;

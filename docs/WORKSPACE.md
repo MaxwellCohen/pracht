@@ -7,11 +7,29 @@ described in `VISION_MVP.md`.
 
 | Pin | Where | Value |
 | --- | --- | --- |
-| Package manager | root `package.json#packageManager`, both workflows | `pnpm@11.3.0` |
+| Package manager | root `package.json#packageManager`, CI / release / pkg.pr.new workflows | `pnpm@11.3.0` |
 | Node | root `package.json#engines.node`, `.nvmrc`, `.node-version` | `>=22.18` / `22.22.3` |
 
 Every published package carries `engines.node: ">=22.18"` too, so an install on
 an older runtime warns instead of failing halfway through a build.
+
+### Continuous releases (pkg.pr.new)
+
+`.github/workflows/pkg-pr-new.yml` publishes every `packages/*` build to
+[pkg.pr.new](https://pkg.pr.new) on PRs and on pushes to `main`. Install the
+[pkg-pr-new GitHub App](https://github.com/apps/pkg-pr-new) on the repository
+before the first run. The PR comment leads with scaffold commands:
+
+```bash
+pnpm dlx https://pkg.pr.new/<owner>/pracht/create-pracht@<sha> my-app
+pnpm dlx https://pkg.pr.new/<owner>/pracht/create-fels@<sha> my-app
+```
+
+`create-pracht` / `create-fels` detect the pkg.pr.new URL they were installed
+from and write sibling preview specs into the new app's `package.json`, so the
+first install uses this PR's tarballs (including unpublished packages like
+`fels`). Preview versions are rewritten to `0.0.0-preview-<sha>` so they cannot
+collide with a later npm release of the same semver.
 
 `create-pracht` emits a `tsconfig.client.json` that enables TypeScript's
 `browser` custom condition for routes, shells, islands, and their imports. Root
@@ -39,7 +57,11 @@ constraint; the CLI test is.
 
 | Path                          | Package                      | Current role                                                                                                 |
 | ----------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `packages/framework`          | `@pracht/core`               | Core manifest API, route resolution, API routes, SSR rendering, client runtime                               |
+| `packages/framework`          | `@pracht/core`               | Core manifest API, route resolution, API routes, renderer contract, framework-free stores, client runtime    |
+| `packages/preact`             | `@pracht/preact`             | Preact UI renderer: Vite plugins, hooks re-exports (default renderer)                                        |
+| `packages/solid`              | `@pracht/solid`              | SolidJS 2.0 UI renderer: Vite plugins, SSR/stream, hooks, compile-time islands                               |
+| `packages/fels`               | `fels`                       | Solid-first entry: re-exports core + registers `@pracht/solid`                                               |
+| `packages/create-fels`        | `create-fels`                | Scaffold a Fels (Pracht + Solid) app                                                                         |
 | `packages/content`            | `@pracht/content`            | Optional server-only content registry, locale fallback, compilation cache, Vite transforms, and static artifacts |
 | `packages/markdown`           | `@pracht/markdown`           | Official Markdown collection compiler with safe relative-image imports and zero-runtime responsive markup       |
 | `packages/openapi`            | `@pracht/openapi`            | Opt-in OpenAPI 3.1 descriptors, live JSON/UI endpoints, and static build artifacts for API routes            |
@@ -59,6 +81,7 @@ constraint; the CLI test is.
 | `packages/cli`                | `@pracht/cli`                | `pracht dev`, `build`, `verify`, the `generate` subcommands, `doctor`, and the `pracht dev-mcp` authoring server |
 | `packages/start`              | `create-pracht`              | Project scaffolder: router choice, adapter choice, agent tooling (`.mcp.json`, skills, `AGENTS.md`)         |
 | `examples/basic`              | `@pracht/example-basic`      | The reference app: all four render modes, loaders, API routes, `@pracht/session` auth, capabilities, forms. Builds for four adapters from one source tree |
+| `examples/solid`              | `@pracht/example-solid`      | Minimal Fels app: Solid 2.0 renderer, SSR + SSG routes                                                       |
 | `examples/showcase`           | `@pracht/example-showcase`   | *Launchpad* — the whole capability graph and agent trust layer in one app: six operations projected to browser, forms, WebMCP, signed remote callers, and `/mcp` |
 | `examples/islands`            | `@pracht/example-islands`    | Partial hydration: an island beside a server component whose handlers never hydrate; server islands   |
 | `examples/pages-router`       | `@pracht/example-pages-router` | File-system routing with no manifest, including the `_app.tsx` shell convention                            |
